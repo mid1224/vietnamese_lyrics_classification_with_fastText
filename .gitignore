@@ -1,0 +1,9 @@
+# ignore all files inside these folders but keep the folders (commit a .gitkeep in each)
+trained_models/*
+!trained_models/.gitkeep
+
+pretrained_vectors/*
+!pretrained_vectors/.gitkeep
+
+# Python virtual environment
+.venv/
