@@ -26,32 +26,81 @@ def preprocess_line(line: str) -> str:
     # No label found; preprocess the whole line
     return preprocess_vietnamese_lyrics(stripped)
 
-# Read the full dataset
-with open("dataset/raw_dataset.txt", "r", encoding="utf-8") as f:
-    raw_lines = f.readlines()
+def augment_sentence_shuffle(line: str) -> str | None:
+    """
+    Takes a preprocessed line, shuffles its content sentences, and returns a new augmented line.
+    """
+    stripped = line.strip()
+    match = re.match(r"^(__label__\S+)\s+(.*)$", stripped)
+    if not match:
+        return None
 
-# Preprocess each non-empty line
-processed_lines = []
-for line in raw_lines:
+    label, content = match.group(1), match.group(2)
+    
+    # Split content into words.
+    words = content.split()
+    if len(words) < 16: # Don't augment very short lines
+        return None
+
+    sentences = []
+    # Group words into chunks to simulate sentences/lines.
+    chunk_size = random.randint(8, 15)
+    for i in range(0, len(words), chunk_size):
+        sentences.append(" ".join(words[i:i+chunk_size]))
+
+    # Shuffle the sentences
+    random.shuffle(sentences)
+    
+    augmented_content = " ".join(sentences)
+    return f"{label} {augmented_content}"
+
+
+# --- Main script ---
+
+# 1. Read and preprocess the raw training data
+with open("dataset/dataset_raw_train.txt", "r", encoding="utf-8") as f:
+    raw_train_lines = f.readlines()
+
+train_data = []
+for line in raw_train_lines:
     processed = preprocess_line(line)
-    if not processed:
-        continue
-    processed_lines.append(processed + "\n")
+    if processed:
+        train_data.append(processed)
 
-# Shuffle lines deterministically for reproducibility
+# 2. Read and preprocess the raw test/validation data
+with open("dataset/dataset_raw_test.txt", "r", encoding="utf-8") as f:
+    raw_valid_lines = f.readlines()
+
+valid_data = []
+for line in raw_valid_lines:
+    processed = preprocess_line(line)
+    if processed:
+        valid_data.append(processed)
+
+# 3. Augment ONLY the training data, creating 2 augmented versions for each original
+augmented_train_data = []
+for line in train_data:
+    # Create the first augmented version
+    augmented_line_1 = augment_sentence_shuffle(line)
+    if augmented_line_1:
+        augmented_train_data.append(augmented_line_1)
+    
+    # Create the second augmented version
+    augmented_line_2 = augment_sentence_shuffle(line)
+    if augmented_line_2:
+        augmented_train_data.append(augmented_line_2)
+
+# 4. Combine original training data with augmented data and shuffle
+final_train_data = train_data + augmented_train_data
 random.seed(42)
-random.shuffle(processed_lines)
+random.shuffle(final_train_data)
 
-# Split the data ~80/20 (1783 for training, 400 for validation, total 2103)
-train_data = processed_lines[:1703]
-valid_data = processed_lines[1703:2103]
-
-# Save the training file
+# 5. Save the final datasets
 with open("dataset/dataset.train", "w", encoding="utf-8") as f:
-    f.writelines(train_data)
+    f.write("\n".join(final_train_data))
 
-# Save the validation file
 with open("dataset/dataset.valid", "w", encoding="utf-8") as f:
-    f.writelines(valid_data)
+    f.write("\n".join(valid_data))
 
-print(f"Created dataset.train ({len(train_data)} lines) and dataset.valid ({len(valid_data)} lines).")
+print(f"Created dataset.train ({len(final_train_data)} lines) and dataset.valid ({len(valid_data)} lines).")
+print("Training data was augmented. Validation data remains untouched.")
