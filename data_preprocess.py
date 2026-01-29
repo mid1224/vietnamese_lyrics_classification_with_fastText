@@ -6,8 +6,12 @@ def preprocess_vietnamese_lyrics(text: str) -> str:
     text = text.lower()
     # 2. Remove special characters (keep underscores/letters/digits/space)
     text = re.sub(r"[^\w\s]", "", text)
-    # 3. Word segmentation (underscores for compounds)
-    text = word_tokenize(text, format="text")
+    # 3. Remove digits
+    text = re.sub(r"\d+", "", text)
+    # 4. Remove extra spaces
+    text = re.sub(r"\s+", " ", text).strip()
+    # 5. Word segmentation (underscores for compounds)
+    # text = word_tokenize(text, format="text")
     return text
 
 def preprocess_line(line: str) -> str:
@@ -28,7 +32,7 @@ def preprocess_line(line: str) -> str:
 # --- Main script ---
 
 # 1. Read and preprocess the raw training data
-with open("dataset/dataset_raw_train_remove.txt", "r", encoding="utf-8") as f:
+with open("dataset_raw/dataset_raw_train_clean.txt", "r", encoding="utf-8") as f:
     raw_train_lines = f.readlines()
 
 train_data = []
@@ -38,7 +42,7 @@ for line in raw_train_lines:
         train_data.append(processed)
 
 # 2. Read and preprocess the raw test/validation data
-with open("dataset/dataset_raw_test_remove.txt", "r", encoding="utf-8") as f:
+with open("dataset_raw/dataset_raw_test_clean.txt", "r", encoding="utf-8") as f:
     raw_valid_lines = f.readlines()
 
 valid_data = []
