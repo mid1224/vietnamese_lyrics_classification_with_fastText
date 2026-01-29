@@ -13,9 +13,9 @@ import fasttext
 
 model = fasttext.train_supervised(
     input="dataset/dataset.train",
-    lr=0.2,             # Lower learning rate is often better for OVA
+    lr=0.15,             # Lower learning rate is often better for OVA
     epoch=25,           # The number of times each examples is seen
-    wordNgrams=4,       # N-gram
+    wordNgrams=3,        # N-gram
     bucket=200000,      # allocate space for 200000 unique vectors for the n-grams.
                         # A larger bucket size allows for more distinct n-gram representations (fewer collisions) 
                         # but increases the size of the .bin model file.

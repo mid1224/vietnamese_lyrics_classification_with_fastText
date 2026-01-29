@@ -32,7 +32,7 @@ def preprocess_line(line: str) -> str:
 # --- Main script ---
 
 # 1. Read and preprocess the raw training data
-with open("dataset_raw/dataset_raw_train_clean.txt", "r", encoding="utf-8") as f:
+with open("dataset_raw/dataset_raw_train_clean_trans.txt", "r", encoding="utf-8") as f:
     raw_train_lines = f.readlines()
 
 train_data = []
@@ -42,7 +42,7 @@ for line in raw_train_lines:
         train_data.append(processed)
 
 # 2. Read and preprocess the raw test/validation data
-with open("dataset_raw/dataset_raw_test_clean.txt", "r", encoding="utf-8") as f:
+with open("dataset_raw/dataset_raw_test_clean_trans.txt", "r", encoding="utf-8") as f:
     raw_valid_lines = f.readlines()
 
 valid_data = []
