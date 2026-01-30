@@ -2,12 +2,9 @@ import fasttext
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
 
-# Load the pre-trained model
 model = fasttext.load_model("trained_models/model_1.bin")
 
-# Path to the validation dataset
 validation_file_path = "dataset/dataset.valid"
 
 y_true = []
@@ -32,8 +29,8 @@ with open(validation_file_path, 'r', encoding='utf-8') as f:
         predicted_label = prediction[0][0]
         y_pred.append(predicted_label)
 
-# --- METRICS CALCULATION ---
 
+# METRICS CALCULATION
 # 1. Accuracy
 # The proportion of correct predictions among the total number of cases processed.
 accuracy = accuracy_score(y_true, y_pred)
@@ -50,14 +47,11 @@ print(f"Overall Accuracy: {accuracy:.4f}\n")
 print("Classification Report:")
 print(classification_report(y_true, y_pred, zero_division=0, digits=4))
 
-
 # 3. Confusion Matrix
-# A table used to describe the performance of a classification model.
-# It shows the number of correct and incorrect predictions for all classes.
 labels = sorted(list(set(y_true)))
 cm = confusion_matrix(y_true, y_pred, labels=labels)
 
-# Optional: Plot the confusion matrix for better visualization
+# Plot the confusion matrix
 plt.figure(figsize=(10, 8))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
 plt.title('Confusion Matrix')
