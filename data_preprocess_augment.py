@@ -67,24 +67,27 @@ for line in raw_valid_lines:
 
 # Augment training data based on label frequency
 # Count label occurrences
-labels = [line.split()[0] for line in train_data if line.strip()]
+labels = []
+for line in train_data:
+    line.strip()
+    label = line.split()[0]
+    labels.append(label)
+
 label_counts = Counter(labels)
-max_count = max(label_counts.values()) if label_counts else 0
+max_count = max(label_counts.values())
 
 augmented_train_data = []
-if max_count > 0:
-    for line in train_data:
-        label = line.split()[0]
-        count = label_counts[label]
+for line in train_data:
+    label = line.split()[0]
+    count = label_counts[label]
+    
+    if count < max_count:
+        num_augmentations = round((max_count / count) - 1) # Calculate how many times to augment
         
-        # Calculate how many times to augment
-        if count < max_count:
-            num_augmentations = round((max_count / count) - 1)
-            
-            for _ in range(num_augmentations):
-                augmented_line = augment_sentence_shuffle(line)
-                if augmented_line:
-                    augmented_train_data.append(augmented_line)
+        for i in range(num_augmentations):
+            augmented_line = augment_sentence_shuffle(line)
+            if augmented_line:
+                augmented_train_data.append(augmented_line)
 
 # Combine original training data with augmented data and shuffle
 final_train_data = train_data + augmented_train_data
@@ -100,7 +103,12 @@ with open("dataset/dataset.valid", "w", encoding="utf-8") as f:
 print(f"Created dataset.train (Augmented) ({len(final_train_data)} lines) and dataset.valid ({len(valid_data)} lines).")
 
 # Print new label distribution for debugging
-final_labels = [line.split()[0] for line in final_train_data if line.strip()]
+final_labels = []
+for line in final_train_data:
+    if line.strip():
+        label = line.split()[0]
+        final_labels.append(label)
+        
 final_label_counts = Counter(final_labels)
 print("\nOriginal label distribution:")
 print(label_counts)
