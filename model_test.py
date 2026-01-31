@@ -52,7 +52,7 @@ labels = sorted(list(set(y_true)))
 cm = confusion_matrix(y_true, y_pred, labels=labels)
 
 # Plot the confusion matrix
-plt.figure(figsize=(10, 8))
+plt.figure(figsize=(12, 10))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
 plt.title('Confusion Matrix')
 plt.ylabel('Actual Labels')

@@ -3,7 +3,7 @@ import fasttext
 # Train the model
 model = fasttext.train_supervised(
     input="dataset/dataset.train",
-    lr=0.2,             # Lower learning rate is often better for OVA
+    lr=0.2,             # Learning rate
     epoch=25,           # The number of times each examples is seen
     wordNgrams=3,       # N-gram
     bucket=200000,      # allocate space for how many unique vectors for the n-grams.
@@ -12,8 +12,8 @@ model = fasttext.train_supervised(
     loss='softmax',     # Use used loss function
 )
 
-# Non-augmented: lr=0.5, ngram=2
-# Augmented: lr=0.2, ngram=3
+# Non-augmented: lr=0.7, epoch=30
+# Augmented: lr=0.2, epoch=25
 
 # model = fasttext.train_supervised(input="dataset/dataset.train", autotuneValidationFile='dataset/dataset.valid', autotuneMetric="f1:__label__life")
 
