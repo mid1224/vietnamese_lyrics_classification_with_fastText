@@ -257,7 +257,7 @@ def translate_line(text):
             if word_lower in MUSIC_DICT:
                 translated = MUSIC_DICT[word_lower] # Dich theo dictionary
                 
-                new_words.append(translated)
+                new_words.append(translated) # Comment out this line to remove english words instead
             else:
                 new_words.append(word) # Không có trong từ điển
         else:
