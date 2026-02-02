@@ -1,13 +1,10 @@
 import os
-import random
 
 data_folder = 'dataset_raw/data_6_school'           
 label = '__label__school' 
 train_file = 'dataset_merge_label/school_train.txt'   
 test_file = 'dataset_merge_label/school_test.txt'     
 num_samples_to_take = 100                   
-
-random.seed(42)
 
 def process_data_fixed_test_size():
     files = [f for f in os.listdir(data_folder)]
@@ -30,8 +27,6 @@ def process_data_fixed_test_size():
         # Thêm nhãn vào đầu dòng
         line = f"{label} {clean_text}"
         all_data_lines.append(line)
-
-    random.shuffle(all_data_lines) # Tron data
 
     # data split
     # Lấy 100 bài đầu tiên làm Test
